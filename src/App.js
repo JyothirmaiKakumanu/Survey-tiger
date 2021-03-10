@@ -1,24 +1,42 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Logo from './logo.png';
+import Menu from './components/Menu';
+import CreateSurvey from './components/CreateSurvey';
+import Publish from './components/Publish';
+import { useState } from 'react';
+import {Link} from 'react-router-dom';
+
+
 
 function App() {
+  const [squestion,setSquestion] = useState([]);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+<div className="col-md-10 offset-md-1 col-12 text-center">
+  
+  
+  <Router>
+  <Link to="/">
+    <img className="cold-md-6" alt='logo' src={Logo}/>
+  </Link>
+    <Switch>
+    <Route path="/" component={Menu} exact/>
+      <Route path="/create" exact>
+        <CreateSurvey squestion={squestion} setSquestion={setSquestion}></CreateSurvey>
+        </Route>
+      <Route path="/publish">
+          <Publish questions={squestion}/>
+      </Route>
+      
+    </Switch>
+  </Router>
+</div>
+    </>
   );
 }
 
