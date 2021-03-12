@@ -1,98 +1,95 @@
-import React, { useState } from 'react';
-import Options from './Options';
-import Questions from './Questions';
-import TypeSelector from './TypeSelector';
+import TypeSelector from "./TypeSelector";
+import Question from './Question';
+import Options from "./Options";
+import { useState } from "react";
 import { useHistory } from "react-router";
-// import Publish from './Publish';
 
 
-const CreateSurvey = ({squestion,setSquestion}) => {
-
-    
+const CreateSurvey = ({ squestions, setSquestions }) => {
 
     const history = useHistory();
-    const getRandom =()=>{
-        return Math.floor((Math.random() * 1000)+1);
-    }
-    const defaultOptionsState = [{uid:getRandom(),value:'',},{uid:getRandom(),value:'',}];
+    const getRandom = () => { return Math.floor((Math.random() * 1000) + 1);}
+    const defaultOptionsState = [{uid: getRandom(), value:''},{uid: getRandom(), value:''}];
     const [qText, setQtext] = useState('');
     const [qType, setQtype] = useState(0);
-    const [options,setOptions]= useState(defaultOptionsState);
+    const [options, setOptions] = useState(defaultOptionsState);
 
-    const addOptions =()=>{
-         let newOption = {
-             uid: getRandom(),
-             value:''
-         }
-
-         let updatedOptions = [...options];
-         updatedOptions.push(newOption);
-         setOptions(updatedOptions);
-    }
-
-    const deleteOptions=()=>{
-        console.log(options.length);
-        if(options.length===2){
-            alert("Error: A select type question should have atleast 2 options");
-        }else {
-        let updatedOptions= [...options];
-        updatedOptions.pop();
-        setOptions(updatedOptions);
+    const addOptions = () => {
+        let newOption = {
+            uid: getRandom(),
+            value: ''
         }
+        let updatedOptions  = [...options];
+        updatedOptions.push(newOption);
+        setOptions(updatedOptions);
+
     }
 
-    const updateOptiontext =(id, text)=>{
-        let updatedOptions=[...options];
-        let changeIndex = updatedOptions.findIndex(x=> x.uid === id);
+    const deleteOptions = () => {
+        if(options.length === 2) {
+            alert("Error: A select type question should have atleast 2 options");
+        } else {
+            let updatedOptions = [...options];
+            updatedOptions.pop();
+            setOptions(updatedOptions);
+        }
+        
+    }
+
+    const updateOptionText = (id, text) => {
+        let updatedOptions = [...options];
+        let changeIndex = updatedOptions.findIndex(x => x.uid === id);
         updatedOptions[changeIndex].value = text;
         setOptions(updatedOptions);
     }
 
-    const updateSurveyQuestion = ()=>{
-        let newSurveryQuestion = [...squestion];
+    const updateSurveyQuestion = () => {
+        let newSurveyQuestion = [...squestions];
         let newQ = {
-            qtext:qText,
-            qtype:qType,
-            options:options,
+            qtext : qText,
+            qtype : qType,
+            options : options
         }
-        newSurveryQuestion.push(newQ);
-        setSquestion(newSurveryQuestion);
+        newSurveyQuestion.push(newQ);
+        setSquestions(newSurveyQuestion);
         setQtype(0);
         setQtext('');
         setOptions(defaultOptionsState);
-    }
-
-    const publishQuestion =()=>{
-        updateSurveyQuestion();
-        history.push('./publish');
         
     }
 
-    return (
-        <>
-            <TypeSelector qtype={qType} setQtype={setQtype}/>
-            {qType!==0?
-                <>
+    const publish = () => {
+        updateSurveyQuestion();
+        history.push('/published')
+    }
 
-                    <Questions onTextUpdate={setQtext} />
-                    {options.map((opt,key)=>(
-                
+    return(
+        <>
+            <TypeSelector qtype={qType} setQtype={setQtype} />
+            
+            {qType !== 0 ?
+                <>
+                    <Question onTextUpdate={setQtext} />
+                    
+                    {options.map((opt, key) => (
+                        
                         <Options 
                             key={key}
-                            uid={opt.uid}
-                            addOptions={addOptions}
-                            deleteOptions = {deleteOptions}
-                            updateText = {updateOptiontext}
-                        />
-                
-                ))}
-                <button className="btn btn-primary m-1" onClick={()=>updateSurveyQuestion()}>Add Question</button>
-                <button className="btn btn-primary m-1" onClick={()=>publishQuestion()}>Publish</button>
-            </>
-            :null}
+                            uid = {opt.uid}
+                            addOptions={addOptions} 
+                            deleteOptions={deleteOptions}
+                            updateText = {updateOptionText}
+                        /> 
+                            
+                        
+                    ))}
+                     <button className="btn btn-primary m-1" onClick={() => updateSurveyQuestion()}>Add Question</button>
+                    <button className="btn btn-primary m-1" onClick={() => publish()}>Publish</button>
+                </>
+            : null}
 
-            
-            
+           
+                  
         </>
     )
 }
